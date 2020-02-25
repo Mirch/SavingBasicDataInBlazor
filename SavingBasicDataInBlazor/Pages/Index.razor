@@ -1,0 +1,48 @@
+﻿@page "/"
+
+@using SavingBasicDataInBlazor.Models
+
+@inject SavingBasicDataInBlazor.Data.ApplicationDbContext _context
+
+<div class="reminder-form">
+    <EditForm Model=@reminder OnValidSubmit=@HandleValidSubmit>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group">
+            <label for="EmailAddress">Email Address</label>
+            <InputText id="EmailAddress" class="form-control" @bind-Value="reminder.EmailAddress" />
+        </div>
+
+        <div class="form-group">
+            <label for="Message">Message</label>
+            <InputTextArea id="Message" class="form-control" @bind-Value="reminder.Message" />
+        </div>
+
+        <div class="form-group">
+            <label for="DateTime">Date and Time</label>
+            <InputDate id="DateTime" class="form-control" @bind-Value="reminder.DateTime" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Create Reminder</button>
+    </EditForm>
+</div>
+
+@code {
+    private Reminder reminder = new Reminder();
+
+    private async void HandleValidSubmit()
+    {
+        try
+        {
+            _context.Reminders.Add(reminder);
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            base.StateHasChanged();
+        }
+        reminder = new Reminder();
+        base.StateHasChanged();
+    }
+}
